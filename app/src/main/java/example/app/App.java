@@ -1,7 +1,5 @@
 package example.app;
 
-import java.util.Scanner;
-import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 
 public class App {
@@ -10,12 +8,12 @@ public class App {
 
         try {
             PGSimpleDataSource ds = new PGSimpleDataSource();
-            ds.setServerNames(new String[]{"<globalhost>"});
+            ds.setServerNames(new String[]{"{globalhost}"});
             ds.setPortNumbers(new int[]{26257});
-            ds.setDatabaseName("<cluster>.defaultdb");
+            ds.setDatabaseName("{cluster_name}.defaultdb");
             ds.setSsl(true);
-            ds.setUser("<user>>");
-            ds.setPassword("<password>");
+            ds.setUser("{username}");
+            ds.setPassword("{password}");
             ds.setSslMode("verify-full");
             ds.setSslRootCert(System.getenv("$HOME/.postgresql/root.crt"));
             ds.setApplicationName("App");
