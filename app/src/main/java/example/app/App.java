@@ -1,5 +1,7 @@
 package example.app;
 
+import java.sql.ResultSet;
+import java.sql.Connection;
 import org.postgresql.ds.PGSimpleDataSource;
 
 public class App {
@@ -8,16 +10,26 @@ public class App {
 
         try {
             PGSimpleDataSource ds = new PGSimpleDataSource();
-            ds.setServerNames(new String[]{"{globalhost}"});
+            ds.setServerNames(new String[]{"{host}"});
             ds.setPortNumbers(new int[]{26257});
-            ds.setDatabaseName("{cluster_name}.defaultdb");
+            ds.setDatabaseName("{database}");
             ds.setSsl(true);
             ds.setUser("{username}");
             ds.setPassword("{password}");
             ds.setSslMode("verify-full");
+            // on Windows set this to "%APPDATA%/.postgresql/root.crt"
             ds.setSslRootCert(System.getenv("$HOME/.postgresql/root.crt"));
             ds.setApplicationName("App");
-            System.out.println("Hey! You connected to your CockroachDB cluster.");
+            Connection connection = ds.getConnection();
+            String message = "";
+            ResultSet res = connection.createStatement()
+                    .executeQuery("SELECT message FROM messages");
+            if(!res.next()) {
+                System.out.printf("Error retrieving message.");
+            } else {
+              message = res.getString("message");
+            }
+            System.out.println(message);
         }
         catch(Exception e)
         {
